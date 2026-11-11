@@ -1,0 +1,17 @@
+{
+  "niche":"restaurant operations",
+  "audiences":["restaurant owners and operations managers"],
+  "geography":"Mexico",
+  "researchLanguage":"en",
+  "contentLanguage":"en",
+  "topics":["reporting","inventory","multi-location operations"],
+  "keywords":["daily reporting","inventory maintenance","multi-location visibility"],
+  "competitors":[],
+  "providers":[{"name":"offline-demo","type":"fixture","enabled":true,"fixturePath":"../fixtures/demo-evidence.json"}],
+  "budgets":{"maxRequests":0,"maxCredits":0,"maxTokens":0},
+  "cache":{"enabled":true,"ttlHours":24},
+  "http":{"timeoutMs":15000,"maxRetries":2,"baseDelayMs":250,"minIntervalMs":100},
+  "collection":{"maxPagesPerQuery":2,"pageSize":20,"enrichTopItems":8},
+  "recommendations":{"max":3,"minEvidenceScore":45,"minIndependentSources":2,"llm":{"enabled":false,"model":"gpt-4.1-mini","maxOutputTokens":800,"apiKeyEnv":"OPENAI_API_KEY"}},
+  "outputDirectory":"../examples/generated"
+}

@@ -1,60 +1,73 @@
-# SignalForge
-Open-Source AI Market Research &amp; Content Intelligence Agent- Turn social conversations into evidence-backed content opportunities.
+# SignalForge V1 (release candidate)
 
-## API Configuration
+SignalForge turns public market signals into evidence-backed content recommendations. It normalizes and deduplicates sources, scores evidence, preserves counterevidence, isolates provider failures, enforces budgets, and writes traceable JSON and Markdown reports. It was developed by Notrix Data & Automation.
 
-Notrix Growth Agent is an open-source research and content recommendation engine.
+## Architecture
 
-To collect live social media data, users must configure their own API credentials for the providers they choose to enable.
+`providers` collect public data; deterministic core modules normalize, deduplicate, score, and rank it; the report layer emits up to three recommendations. LLM use is not required in V1. Fixture mode is fully offline.
 
-**API keys are not included in this repository.**
+## Prerequisites and installation
 
-### Quick Start
+- Node.js 20 or newer
+- npm (bundled with Node)
 
-1. Clone the repository.
-2. Install the dependencies described in the setup guide.
-3. Copy `.env.example` to `.env`.
-4. Add your own API keys.
-5. Configure your target industry, audience, geography, and research topics.
-6. Run the environment validation command.
-7. Start a research cycle.
-
-### Environment Variables
-
-Example configuration (illustrative; check `.env.example` for the exact variables supported by your version):
-
-```dotenv
-# Social data provider
-SCRAPECREATORS_API_KEY=your_api_key_here
-
-# Optional AI analysis provider
-OPENAI_API_KEY=your_api_key_here
+```bash
+npm install
+npm run demo
 ```
 
-### Data Providers
+No runtime packages are currently required. `npm install` only creates the lockfile. Video tooling and the Notrix Video Engine are not dependencies.
 
-- **Reddit:** Public research, discussions, and comments.
-- **YouTube:** Videos, creator research, comments, and transcripts.
-- **LinkedIn:** Professional conversations and market signals.
-- **Facebook:** Public content and targeted source monitoring.
-- **Other platforms:** Subject to available provider integrations.
+## Quick start
 
-Platform availability depends on configured credentials, provider access, and applicable restrictions.
+```bash
+node src/cli.js run --config config/demo.json
+```
 
-Some integrations may require paid API credits. Users are responsible for their own provider accounts, costs, and compliance with applicable terms.
+Reports appear under `examples/generated/`. The included data is synthetic and safe for demos.
 
-### Security
+## Configuration
 
-Never commit your `.env` file, API keys, access tokens, or private research data.
+JSON configuration supports niche, audiences, geography, research/content languages, topics, keywords, competitors/reference creators, enabled providers, request/credit/token budgets, cache expiration, bounded pagination, HTTP retry/timeout/rate interval, evidence thresholds, and output directory. Copy `config/demo.json`; paths are resolved relative to the config file.
 
-Use `.env.example` only for placeholder values.
+## API keys and providers
 
-Before publishing a repository, verify that secrets are absent from both the current files and Git history.
+Fixture mode needs no credentials and costs nothing. ScrapeCreators is optional and uses `SCRAPECREATORS_API_KEY` from the process environment. Never commit `.env`. Its API may consume paid credits; configure `maxRequests`, `maxCredits`, `creditsPerRequest`, and `maxPagesPerQuery` according to your account. No unverified price is stated here.
 
-### Research Integrity
+Historical Notrix runs (not included) indicate: Reddit and YouTube worked reliably; LinkedIn, Facebook, and TikTok had partial public coverage; Instagram failed; Threads was untested. These are historical observations, not a current service guarantee. Each live provider must be reverified by the operator. Provider failures are disclosed and do not stop other enabled providers.
 
-The agent separates observed evidence from interpretation and hypotheses.
+## How recommendations work
 
-Content recommendations should include supporting source links, confidence or evidence quality, and relevant limitations.
+Evidence scores rank source proximity, problem specificity, configured commercial relevance, independent corroboration, and geographic relevance. Scores do not prove prevalence. Vendor claims are marked separately. Recommendations require configurable evidence and independent-source thresholds and preserve sources, uncertainty, and counterevidence. If evidence is weak, fewer than three recommendations are returned.
 
-The agent does not guarantee that a recommendation will go viral or generate sales.
+## Commands
+
+```bash
+npm run demo
+npm test
+npm run check:release
+npm run validate
+node src/cli.js validate-config --config config/demo.json
+```
+
+## Known limitations
+
+- Public discovery is incomplete and platform-dependent.
+- ScrapeCreators field shapes may change; live endpoints were not called for this release preparation.
+- V1 uses deterministic templates, not semantic clustering; configure topics carefully.
+- Public evidence must not be interpreted as representative market prevalence.
+
+## Privacy and security
+
+Collect public data only. Do not bypass authentication, CAPTCHAs, access controls, or platform protections. Do not add private profiles, DMs, contact lists, customer data, cookies, research exports, or credentials. The release scanner reports affected paths and risk categories without printing matched values. See `SECURITY.md`.
+
+## Troubleshooting
+
+- Missing key: export `SCRAPECREATORS_API_KEY` or disable that provider.
+- Zero recommendations: lower thresholds only after reviewing evidence quality, or collect more independent sources.
+- Partial coverage: inspect the report's coverage section; successful providers still complete.
+- Budget error: reduce keywords/pages or explicitly raise the corresponding limit.
+
+## Roadmap
+
+Reverify live provider adapters, add authorized official APIs, improve deterministic topic clustering, and add an optional economical LLM synthesis adapter with strict token budgets.

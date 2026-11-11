@@ -1,0 +1,28 @@
+{
+  "name": "signalforge-research-engine",
+  "version": "1.0.0-rc.1",
+  "private": false,
+  "description": "Public-market research and evidence-backed content recommendation engine.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "signalforge": "src/cli.js"
+  },
+  "scripts": {
+    "demo": "node src/cli.js run --config config/demo.json",
+    "run": "node src/cli.js run",
+    "validate-config": "node src/cli.js validate-config",
+    "test": "node --test",
+    "check:release": "node scripts/check-release.js",
+    "validate": "npm test && npm run check:release"
+  },
+  "keywords": [
+    "market-research",
+    "content-research",
+    "social-listening",
+    "evidence"
+  ],
+  "license": "Apache-2.0"
+}
